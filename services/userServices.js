@@ -1,6 +1,6 @@
-import User from '../models/User';
+const User = require('../models/User');
 
-export const UserService = {
+const UserService = {
     register: async (username, password) => {
         const user = new User({username, password});
         return await user.save();
@@ -9,3 +9,5 @@ export const UserService = {
         return User.findOne({username},null,null);
     }
 };
+
+module.exports = UserService

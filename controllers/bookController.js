@@ -1,7 +1,8 @@
-import { BookService } from '../services/bookServices';
-import { BookSchema } from '../schemas/validationSchemas';
+const BookService  = require('../services/bookServices');
+const {BookSchema} = require('../schemas/validationSchemas');
+const { z } = require('zod');
 
-export const BookController = {
+const BookController = {
     getAll: (req, res) => {
         res.json(BookService.getAll());
     },
@@ -51,3 +52,5 @@ export const BookController = {
         }
     }
 };
+
+module.exports = BookController

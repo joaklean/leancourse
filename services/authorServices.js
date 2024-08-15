@@ -1,9 +1,11 @@
-import AuthorModel from '../models/Author';
+const AuthorModel = require('../models/Author');
 
-export const AuthorService = {
-    getAll: () => AuthorModel.getAll(),
-    getById: (id) => AuthorModel.getById(id),
+const AuthorService = {
+    getAll: async () => await AuthorModel.find(),
+    getById: async (id) => await AuthorModel.findById(id),
     create: (author) => AuthorModel.create(author),
-    update: (id, updatedAuthor) => AuthorModel.update(id, updatedAuthor),
-    delete: (id) => AuthorModel.delete(id)
+    update: (id, updatedAuthor) => AuthorModel.findByIdAndUpdate(id, updatedAuthor),
+    delete: (id) => AuthorModel.findByIdAndDelete(id)
 }
+
+module.exports = AuthorService

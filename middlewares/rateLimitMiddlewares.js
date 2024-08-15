@@ -1,10 +1,10 @@
-import Redis from 'ioredis';
+const Redis = require('ioredis');
 
 const redis = new Redis();
 const windowSize = 100000;
 const rateLimit = 10;
 
-export const rateLimitMiddleware = async (req, res, next) => {
+const rateLimitMiddleware = async (req, res, next) => {
     const userId = req.userId; // Assuming user ID is in req.user
     const currentTime = Date.now();
 
@@ -36,3 +36,5 @@ export const rateLimitMiddleware = async (req, res, next) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 };
+
+module.exports = rateLimitMiddleware

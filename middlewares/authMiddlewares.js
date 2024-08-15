@@ -1,8 +1,8 @@
-import jwt from 'jsonwebtoken';
+const jwt = require('jsonwebtoken');
 
 const secret = process.env.JWT_SECRET || 'leanCourseSecret';
 
-export const verifyToken = (req, res, next) => {
+const verifyToken = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -19,3 +19,5 @@ export const verifyToken = (req, res, next) => {
         res.status(403).json({ message: 'Invalid token' });
     }
 };
+
+module.exports = verifyToken

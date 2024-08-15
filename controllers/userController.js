@@ -1,9 +1,9 @@
-import jwt from 'jsonwebtoken';
-import { UserService } from '../services/userServices';
+const jwt = require('jsonwebtoken');
+const UserService = require('../services/userServices');
 
 const secret = process.env.JWT_SECRET || 'leanCourseSecret';
 
-export const UserController = {
+const UserController = {
     register: async (req, res) => {
         try {
             const { username, password } = req.body;
@@ -30,3 +30,5 @@ export const UserController = {
         res.json({ message: 'Welcome to the protected route!' });
     }
 };
+
+module.exports = UserController

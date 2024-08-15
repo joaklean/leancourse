@@ -1,9 +1,11 @@
-import BookModel from '../models/Book';
+const BookModel = require('../models/Book');
 
-export const BookService = {
-    getAll: () => BookModel.getAll(),
-    getById: (id) => BookModel.getById(id),
+const BookService = {
+    getAll: () => BookModel.find(),
+    getById: (id) => BookModel.findById(id),
     create: (book) => BookModel.create(book),
-    update: (id, updatedBook) => BookModel.update(id, updatedBook),
-    delete: (id) => BookModel.delete(id)
+    update: (id, updatedBook) => BookModel.findByIdAndUpdate(id, updatedBook),
+    delete: (id) => BookModel.findByIdAndDelete(id)
 };
+
+module.exports = BookService

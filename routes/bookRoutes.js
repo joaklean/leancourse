@@ -1,7 +1,7 @@
-import { Router } from 'express';
-import { BookController } from '../controllers/bookController';
-import {verifyToken} from "../middlewares/authMiddlewares";
-import {rateLimitMiddleware} from "../middlewares/rateLimitMiddlewares";
+const { Router } = require('express');
+const  BookController  = require('../controllers/bookController');
+const verifyToken = require("../middlewares/authMiddlewares");
+const rateLimitMiddleware = require("../middlewares/rateLimitMiddlewares");
 
 const router = Router();
 
@@ -13,4 +13,4 @@ router.post('/books', BookController.create);
 router.put('/books/:id', BookController.update);
 router.delete('/books/:id', BookController.delete);
 
-export default router;
+module.exports = router;

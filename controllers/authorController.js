@@ -1,13 +1,14 @@
-import { AuthorService } from '../services/authorServices';
-import { AuthorSchema } from '../schemas/validationSchemas';
+const AuthorService  = require('../services/authorServices');
+const {AuthorSchema} = require('../schemas/validationSchemas');
+const { z } = require('zod');
 
-export const AuthorController = {
-    getAll: (req, res) => {
-        res.json(AuthorService.getAll());
+const AuthorController = {
+    getAll: async (req, res) => {
+        res.json(await AuthorService.getAll());
     },
-    getById: (req, res) => {
+    getById: async (req, res) => {
         const { id } = req.params;
-        const author = AuthorService.getById(id);
+        const author = await AuthorService.getById(id);
         if (author) {
             res.json(author);
         } else {
@@ -51,3 +52,5 @@ export const AuthorController = {
         }
     }
 };
+
+module.exports = AuthorController

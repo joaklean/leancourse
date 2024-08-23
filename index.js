@@ -1,8 +1,8 @@
 require('dotenv').config();
 const express = require('express');
-const userRoutes = require('./routes/userRoutes');
-const authorRoutes =  require('./routes/authorRoutes');
-const bookRoutes =  require('./routes/bookRoutes');
+const userRoutes = require('./application/routes/userRoutes');
+const authorRoutes =  require('./application/routes/authorRoutes');
+const bookRoutes =  require('./application/routes/bookRoutes');
 
 const app = express();
 

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const UserService = require('../services/userServices');
+const UserService = require('../repositories/userServices');
 
 const secret = process.env.JWT_SECRET || 'leanCourseSecret';
 

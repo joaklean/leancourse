@@ -1,13 +1,15 @@
-const UserService = require('../repositories/mongo-user.repository');
-const { AuthenticationError } = require('../errors/customErrors');
 const JwtAuthService = require('../services/jwt-auth.service');
+const UserUseCase = require('../../domain/usecases/user.usecase');
+const MongoUserRepository = require('../repositories/mongo-user.repository');
+
+const userUseCase = new UserUseCase(new MongoUserRepository(), new JwtAuthService(process.env.JWT_SECRET || 'leanCourseSecret'));
 
 const UserController = {
 
     register: async (req, res, next) => {
         try {
             const { username, password } = req.body;
-            const user = await UserService.register(username, password);
+            const user = await userUseCase.register(username, password);
             res.status(201).json({ message: 'User registered', user });
         } catch (error) {
             next(error);
@@ -17,14 +19,7 @@ const UserController = {
     login: async (req, res, next) => {
         try {
             const { username, password } = req.body;
-            const user = await UserService.login(username);
-
-            if (!user || user.password !== password) {
-                throw new AuthenticationError('Authentication failed');
-            }
-
-            const authService = new JwtAuthService(process.env.JWT_SECRET || 'leanCourseSecret');
-            const token = authService.generateToken({ userId: user._id });
+            const token = await userUseCase.login(username, password);
 
             res.json({ message: 'Login successful', token });
         } catch (error) {

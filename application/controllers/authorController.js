@@ -1,68 +1,60 @@
 const {AuthorSchema} = require('../schemas/validationSchemas');
-const { z } = require('zod');
 const AuthorUseCase = require('../../domain/usecases/author.usecase');
 const MongoAuthorRepository = require('../repositories/mongo-author.repository');
+const { NotFoundError } = require('../errors/customErrors');
 
 const authorUseCase = new AuthorUseCase(new MongoAuthorRepository());
 
 const AuthorController = {
-    create: async (req, res) => {
+    create: async (req, res, next) => {
         try {
             const data = AuthorSchema.parse(req.body);
             const author = await authorUseCase.createAuthor(data);
             res.status(201).json(author);
         } catch (error) {
-            if (error instanceof z.ZodError) {
-                res.status(400).json({ errors: error.errors });
-            }
-            res.status(400).json({ message: error.message });
+            next(error);
         }
     },
-    getAll: async (req, res) => {
+    getAll: async (req, res, next) => {
         try {
             const authors = await authorUseCase.getAllAuthors();
             res.status(200).json(authors);
         } catch (error) {
-            res.status(500).json({ message: 'Failed to get authors' });
+            next(error);
         }
     },
-    getById: async (req, res) => {
+    getById: async (req, res, next) => {
         try {
             const author = await authorUseCase.getAuthorById(req.params.id);
             if (!author) {
-                return res.status(404).json({ message: 'Author not found' });
+                throw new NotFoundError('Author not found');
             }
             res.status(200).json(author);
         } catch (error) {
-            res.status(500).json({ message: 'Failed to get author' });
+            next(error);
         }
     },
-    update: async (req, res) => {
+    update: async (req, res, next) => {
         try {
             const data = AuthorSchema.parse(req.body);
             const updatedAuthor = await authorUseCase.updateAuthor(req.params.id, data);
-            if (updatedAuthor) {
-                res.status(200).json(updatedAuthor);
-            } else {
-                res.status(404).json({ message: "Author not found" });
+            if (!updatedAuthor) {
+                throw new NotFoundError('Author not found');
             }
+            res.status(200).json(updatedAuthor);
         } catch (error) {
-            if (error instanceof z.ZodError) {
-                res.status(400).json({ errors: error.errors });
-            }
-            res.status(400).json({ message: error.message });
+            next(error);
         }
     },
-    delete: async (req, res) => {
+    delete: async (req, res, next) => {
         try {
             const deletedAuthor = await authorUseCase.deleteAuthor(req.params.id);
-            if (deletedAuthor) {
-                res.status(204).json(deletedAuthor);
-            } else {
-                res.status(404).json({ message: "Author not found" });
+            if (!deletedAuthor) {
+                throw new NotFoundError('Author not found');
             }
+            res.status(204).send();
         } catch (error) {
-            res.status(500).json({ message: 'Failed to delete author' });
+            next(error);
         }
     }
 };

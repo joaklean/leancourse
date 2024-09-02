@@ -1,4 +1,4 @@
-const mongoose = require('../../config/db');
+const mongoose = require('../../../config/db');
 const bookSchema = new mongoose.Schema({
     title: { type: String, required: true },
     genre: { type: String, required: true },

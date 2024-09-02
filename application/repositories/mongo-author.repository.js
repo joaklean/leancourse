@@ -1,24 +1,27 @@
-const IAuthorRepository = require('../../domain/gateways/author.gateway');
-const Author = require('../models/Author');
+const IAuthorRepository = require('../../domain/interfaces/authorRepository.interface');
+const Author = require('../models/mongo/Author-mongo.model'); // Adjust the path if needed
 
-class AuthorRepository extends IAuthorRepository {
+class MongoAuthorRepository extends IAuthorRepository {
     async getAll() {
-        return Author.find();
+        return await Author.find();
     }
 
     async create(author) {
         const newAuthor = new Author(author);
-        return newAuthor.save();
+        return await newAuthor.save();
     }
+
     async getById(id) {
-        return Author.findById(id);
+        return await Author.findById(id);
     }
-    async update(id, updatedAuthor) {
-        return Author.findByIdAndUpdate(id, updatedAuthor);
+
+    async update(id, author) {
+        return await Author.findByIdAndUpdate(id, author, { new: true });
     }
+
     async delete(id) {
-        return Author.findByIdAndDelete(id);
+        return await Author.findByIdAndDelete(id);
     }
 }
 
-module.exports = AuthorRepository;
+module.exports = MongoAuthorRepository;

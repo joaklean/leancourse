@@ -1,34 +1,40 @@
-const jwt = require('jsonwebtoken');
-const UserService = require('../repositories/userServices');
-
-const secret = process.env.JWT_SECRET || 'leanCourseSecret';
+const UserService = require('../repositories/mongo-user.repository');
+const { AuthenticationError } = require('../errors/customErrors');
+const JwtAuthService = require('../repositories/jwt-auth.service');
 
 const UserController = {
-    register: async (req, res) => {
+
+    register: async (req, res, next) => {
         try {
             const { username, password } = req.body;
             const user = await UserService.register(username, password);
             res.status(201).json({ message: 'User registered', user });
         } catch (error) {
-            res.status(500).json({ error: 'Registration failed' });
+            next(error);
         }
     },
-    login: async (req, res) => {
+
+    login: async (req, res, next) => {
         try {
             const { username, password } = req.body;
             const user = await UserService.login(username);
+
             if (!user || user.password !== password) {
-                return res.status(401).json({ error: 'Authentication failed' });
+                throw new AuthenticationError('Authentication failed');
             }
-            const token = jwt.sign({ userId: user._id }, secret, { expiresIn: '1h' });
+
+            const authService = new JwtAuthService(process.env.JWT_SECRET || 'leanCourseSecret');
+            const token = authService.generateToken({ userId: user._id });
+
             res.json({ message: 'Login successful', token });
         } catch (error) {
-            res.status(500).json({ error: 'Login failed' });
+            next(error);
         }
     },
+
     protected: (req, res) => {
         res.json({ message: 'Welcome to the protected route!' });
     }
-};
+}
 
-module.exports = UserController
+module.exports = UserController;

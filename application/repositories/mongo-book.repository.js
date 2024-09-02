@@ -1,24 +1,27 @@
-const IBookRepository = require('../../domain/gateways/book.gateway');
-const Book = require('../models/Book');
+const IBookRepository = require('../../domain/interfaces/bookRepository.interface');
+const Book = require('../models/mongo/Book-mongo.model'); // Adjust the path if needed
 
-class BookRepository extends IBookRepository {
+class MongoBookRepository extends IBookRepository {
     async getAll() {
-        return Book.find();
+        return await Book.find();
     }
 
-    async create(author) {
-        const newBook = new Book(author);
-        return newBook.save();
+    async create(book) {
+        const newBook = new Book(book);
+        return await newBook.save();
     }
+
     async getById(id) {
-        return Book.findById(id);
+        return await Book.findById(id);
     }
-    async update(id, updatedBook) {
-        return Book.findByIdAndUpdate(id, updatedBook);
+
+    async update(id, book) {
+        return await Book.findByIdAndUpdate(id, book, { new: true });
     }
+
     async delete(id) {
-        return Book.findByIdAndDelete(id);
+        return await Book.findByIdAndDelete(id);
     }
 }
 
-module.exports = BookRepository;
+module.exports = MongoBookRepository;

@@ -1,23 +1,22 @@
-const jwt = require('jsonwebtoken');
+const { AuthenticationError } = require('../errors/customErrors');
+const JwtAuthService = require('../repositories/jwt-auth.service');
 
-const secret = process.env.JWT_SECRET || 'leanCourseSecret';
+const authMiddleware = (req, res, next) => {
+        const authHeader = req.headers.authorization;
 
-const verifyToken = (req, res, next) => {
-    const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return next(new AuthenticationError('No token provided'));
+        }
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
-
-    const token = authHeader.split(' ')[1];
-
-    try {
-        const decoded = jwt.verify(token, secret);
-        req.userId = decoded.userId;
-        next();
-    } catch (error) {
-        res.status(403).json({ message: 'Invalid token' });
-    }
+        const token = authHeader.split(' ')[1];
+        const authService = new JwtAuthService(process.env.JWT_SECRET || 'leanCourseSecret');
+        try {
+            const decoded = authService.verifyToken(token);
+            req.userId = decoded.userId;
+            next();
+        } catch (error) {
+            next(new AuthenticationError('Invalid token'));
+        }
 };
 
-module.exports = verifyToken
+module.exports = authMiddleware;

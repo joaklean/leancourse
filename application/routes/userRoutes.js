@@ -1,12 +1,12 @@
 const { Router } = require('express');
-const UserController = require('../controllers/userController');
-const verifyToken = require('../middlewares/authMiddlewares');
 const rateLimitMiddleware = require('../middlewares/rateLimitMiddlewares');
+const authMiddleware = require('../middlewares/authMiddlewares');
+const userController = require('../controllers/userController');
 
 const router = Router();
 
-router.post('/register', UserController.register);
-router.post('/login', UserController.login);
-router.get('/protected', verifyToken, rateLimitMiddleware, UserController.protected);
+router.post('/register', userController.register);
+router.post('/login', userController.login);
+router.get('/protected', authMiddleware, rateLimitMiddleware, userController.protected);
 
 module.exports = router;

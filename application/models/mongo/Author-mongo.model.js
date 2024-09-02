@@ -1,4 +1,4 @@
-const mongoose = require('../../config/db');
+const mongoose = require('../../../config/db');
 const authorSchema = new mongoose.Schema({
     name: { type: String, required: true },
     birthdate: { type: Date, required: true },

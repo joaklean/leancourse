@@ -20,7 +20,7 @@ class AuthorUseCase {
     }
 
     async deleteAuthor(id) {
-        return his.authorRepository.delete(id);
+        return this.authorRepository.delete(id);
     }
 }
 

@@ -1,6 +1,6 @@
 const UserService = require('../repositories/mongo-user.repository');
 const { AuthenticationError } = require('../errors/customErrors');
-const JwtAuthService = require('../repositories/jwt-auth.service');
+const JwtAuthService = require('../services/jwt-auth.service');
 
 const UserController = {
 

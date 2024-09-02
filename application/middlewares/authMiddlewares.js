@@ -1,5 +1,5 @@
 const { AuthenticationError } = require('../errors/customErrors');
-const JwtAuthService = require('../repositories/jwt-auth.service');
+const JwtAuthService = require('../services/jwt-auth.service');
 
 const authMiddleware = (req, res, next) => {
         const authHeader = req.headers.authorization;

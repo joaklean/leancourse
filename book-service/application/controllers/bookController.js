@@ -1,19 +1,12 @@
 const {BookSchema} = require('../schemas/validationSchemas');
 const BookUseCase = require('../../domain/usecases/book.usecase');
 const MongoBookRepository = require('../repositories/mongo-book.repository');
+const AxiosAuthorRepository = require('../repositories/axios-author.repository');
 const { NotFoundError } = require('../errors/customErrors');
 
-const bookUseCase = new BookUseCase(new MongoBookRepository());
+const bookUseCase = new BookUseCase(new MongoBookRepository(), new AxiosAuthorRepository());
 
 const BookController = {
-    updateAuthor: async (req, res, next) => {
-        try {
-            console.log(`Update author in books: ${req.body}`)
-            res.status(200).json(req.body);
-        } catch (error) {
-            next(error);
-        }
-    },
     create: async (req, res, next) => {
         try {
             const data = BookSchema.parse(req.body);

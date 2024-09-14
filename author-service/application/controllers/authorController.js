@@ -2,7 +2,6 @@ const {AuthorSchema} = require('../schemas/validationSchemas');
 const AuthorUseCase = require('../../domain/usecases/author.usecase');
 const MongoAuthorRepository = require('../repositories/mongo-author.repository');
 const { NotFoundError } = require('../errors/customErrors');
-const api = require('../microservice/book-api');
 
 const authorUseCase = new AuthorUseCase(new MongoAuthorRepository());
 
@@ -42,8 +41,6 @@ const AuthorController = {
             if (!updatedAuthor) {
                 throw new NotFoundError('Author not found');
             }
-
-            await api.updateAuthorInBook(updatedAuthor)
             res.status(200).json(updatedAuthor);
         } catch (error) {
             next(error);

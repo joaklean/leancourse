@@ -1,22 +1,62 @@
 class BookUseCase {
-    constructor(bookRepository) {
+    constructor(bookRepository, authorRepository) {
         this.bookRepository = bookRepository;
+        this.authorRepository = authorRepository;
     }
 
     async createBook(data) {
-        return await this.bookRepository.create(data);
+        try {
+            let author = await this.authorRepository.getById(data.author);
+            if (!author) {
+                author = await this.authorRepository.create(data.author);
+            }
+            const bookData = { ...data, author: author._id };
+            return await this.bookRepository.create(bookData);
+        } catch (error) {
+            console.error('Error creating book:', error);
+            throw new Error('Failed to create book');
+        }
     }
 
     async getAllBooks() {
-        return await this.bookRepository.getAll();
+        try {
+            const books = await this.bookRepository.getAll();
+            return await Promise.all(books.map(async (book) => {
+                const author = await this.authorRepository.getById(book.author);
+                return { ...book.toObject(), author };
+            }));
+        } catch (error) {
+            console.error('Error fetching all books:', error);
+            throw new Error('Failed to fetch all books');
+        }
     }
 
     async getBookById(id) {
-        return await this.bookRepository.getById(id);
+        try {
+            const book = await this.bookRepository.getById(id);
+            if (!book) return null;
+            const author = await this.authorRepository.getById(book.author);
+            return { ...book.toObject(), author };
+        } catch (error) {
+            console.error(`Error fetching book with id ${id}:`, error);
+            throw new Error(`Failed to fetch book with id ${id}`);
+        }
     }
 
     async updateBook(id, data) {
-        return await this.bookRepository.update(id, data);
+        try {
+            if (data.author) {
+                let author = await this.authorRepository.getById(data.author);
+                if (!author) {
+                    author = await this.authorRepository.create(data.author);
+                }
+                data.author = author._id;
+            }
+            return await this.bookRepository.update(id, data);
+        } catch (error) {
+            console.error(`Error updating book with id ${id}:`, error);
+            throw new Error(`Failed to update book with id ${id}`);
+        }
     }
 
     async deleteBook(id) {

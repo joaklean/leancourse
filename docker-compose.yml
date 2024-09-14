@@ -14,24 +14,10 @@ services:
     depends_on:
       - redis
 
-  book-service-1:
+  book-service:
     build: ./book-service
     ports:
       - "3002:3000"
-    environment:
-      - NODE_ENV=production
-      - PORT=3000
-      - REDIS_URL=redis://redis:6379
-      - AUTHOR_SERVICE_URL=http://author-service:3000
-      - JWT_SECRET=leanCourseSecret
-      - MONGO_URI=mongodb+srv://@cluster0.qssmust.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-    depends_on:
-      - redis
-
-  book-service-2:
-    build: ./book-service
-    ports:
-      - "3003:3000"
     environment:
       - NODE_ENV=production
       - PORT=3000
@@ -53,5 +39,4 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - author-service
-      - book-service-1
-      - book-service-2
+      - book-service

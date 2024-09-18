@@ -4,6 +4,7 @@ services:
     build: ./author-service
     ports:
       - "3001:3000"
+      - "9229:9229"
     environment:
       - NODE_ENV=production
       - PORT=3000
@@ -18,6 +19,7 @@ services:
     build: ./book-service
     ports:
       - "3002:3000"
+      - "9230:9229"
     environment:
       - NODE_ENV=production
       - PORT=3000

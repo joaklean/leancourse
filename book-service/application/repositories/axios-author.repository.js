@@ -17,9 +17,11 @@ class AxiosAuthorRepository extends IAuthorRepository {
         }
     }
 
-    async create(author) {
+    async create(author, token) {
         try {
-            const response = await axios.post(`${this.authorServiceUrl}/api/authors`, author);
+            const response = await axios.post(`${this.authorServiceUrl}/api/authors`, author, {
+                headers: { Authorization: `Bearer ${token}`}
+            });
             return response.data;
         } catch (error) {
             console.error('Error creating author:', error);
@@ -27,9 +29,11 @@ class AxiosAuthorRepository extends IAuthorRepository {
         }
     }
 
-    async getById(id) {
+    async getById(id, token) {
         try {
-            const response = await axios.get(`${this.authorServiceUrl}/api/authors/${id}`);
+            const response = await axios.get(`${this.authorServiceUrl}/api/authors/${id}`,{
+                headers: { Authorization: `Bearer ${token}`}
+            });
             return response.data;
         } catch (error) {
             console.error(`Error fetching author with id ${id}:`, error);

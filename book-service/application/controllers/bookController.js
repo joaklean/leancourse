@@ -10,7 +10,7 @@ const BookController = {
     create: async (req, res, next) => {
         try {
             const data = BookSchema.parse(req.body);
-            const book = await bookUseCase.createBook(data);
+            const book = await bookUseCase.createBook(data, req.token);
             res.status(201).json(book);
         } catch (error) {
             next(error);
@@ -26,7 +26,7 @@ const BookController = {
     },
     getById: async (req, res, next) => {
         try {
-            const book = await bookUseCase.getBookById(req.params.id);
+            const book = await bookUseCase.getBookById(req.params.id, req.token);
             if (!book) {
                 throw new NotFoundError('Book not found');
             }

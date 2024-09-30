@@ -4,11 +4,11 @@ class BookUseCase {
         this.authorRepository = authorRepository;
     }
 
-    async createBook(data, token) {
+    async createBook(data) {
         try {
-            let author = null //await this.authorRepository.getById(data.author);
+            let author = data.author.id ? await this.authorRepository.getById(data.author.id) : null;
             if (!author) {
-                author = await this.authorRepository.create(data.author, token);
+                author = await this.authorRepository.create(data.author);
             }
             const bookData = { ...data, author: author._id };
             return await this.bookRepository.create(bookData);
@@ -31,11 +31,11 @@ class BookUseCase {
         }
     }
 
-    async getBookById(id, token) {
+    async getBookById(id) {
         try {
             const book = await this.bookRepository.getById(id);
             if (!book) return null;
-            const author = await this.authorRepository.getById(book.author, token);
+            const author = await this.authorRepository.getById(book.author);
             return { ...book.toObject(), author };
         } catch (error) {
             console.error(`Error fetching book with id ${id}:`, error);

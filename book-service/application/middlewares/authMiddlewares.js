@@ -13,7 +13,6 @@ const authMiddleware = (req, res, next) => {
         try {
             const decoded = authService.verifyToken(token);
             req.userId = decoded.userId;
-            req.token = authHeader.replace('Bearer ','')
             next();
         } catch (error) {
             next(new AuthenticationError('Invalid token'));

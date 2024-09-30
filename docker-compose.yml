@@ -25,6 +25,7 @@ services:
       - PORT=3000
       - REDIS_URL=redis://redis:6379
       - AUTHOR_SERVICE_URL=http://author-service:3000
+      - AXIOS_AUTH_INTEGRATION_ID=123456789
       - JWT_SECRET=leanCourseSecret
       - MONGO_URI=mongodb+srv://@cluster0.qssmust.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
     depends_on:

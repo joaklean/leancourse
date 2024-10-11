@@ -1,0 +1,22 @@
+   syntax = "proto3";
+
+   package author;
+
+   service AuthorService {
+       rpc GetAuthorById (AuthorRequest) returns (AuthorResponse);
+       rpc CreateAuthor (Author) returns (AuthorResponse);
+   }
+
+   message AuthorRequest {
+       string id = 1;
+   }
+
+   message Author {
+       string id = 1;
+       string name = 2;
+       string birthdate = 3;
+   }
+
+   message AuthorResponse {
+       Author author = 1;
+   }

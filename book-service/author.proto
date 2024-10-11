@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package author;
+
+// The AuthorService definition.
+service AuthorService {
+    rpc GetAuthorById (AuthorRequest) returns (AuthorResponse);
+    rpc CreateAuthor (Author) returns (AuthorResponse);
+    rpc UpdateAuthor (Author) returns (AuthorResponse);
+    rpc DeleteAuthor (AuthorRequest) returns (EmptyResponse);
+}
+
+// The request message containing the author's ID.
+message AuthorRequest {
+    string id = 1;
+}
+
+// The author message.
+message Author {
+    string id = 1;
+    string name = 2;
+    string birthdate = 3;
+}
+
+// The response message containing the author.
+message AuthorResponse {
+    Author author = 1;
+}
+
+// An empty response message.
+message EmptyResponse {}

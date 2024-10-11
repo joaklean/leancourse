@@ -3,8 +3,10 @@ const BookUseCase = require('../../domain/usecases/book.usecase');
 const MongoBookRepository = require('../repositories/mongo-book.repository');
 const AxiosAuthorRepository = require('../repositories/axios-author.repository');
 const { NotFoundError } = require('../errors/customErrors');
+const GrpcAuthorRepository = require('../repositories/grpc-author.repository');
 
-const bookUseCase = new BookUseCase(new MongoBookRepository(), new AxiosAuthorRepository());
+
+const bookUseCase = new BookUseCase(new MongoBookRepository(), new GrpcAuthorRepository());
 
 const BookController = {
     create: async (req, res, next) => {

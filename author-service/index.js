@@ -1,20 +1,36 @@
-require('dotenv').config();
-const express = require('express');
-const userRoutes = require('./application/routes/userRoutes');
-const authorRoutes = require('./application/routes/authorRoutes');
-const errorHandler = require('./application/middlewares/errorHandler');
+const grpc = require('@grpc/grpc-js');
+const protoLoader = require('@grpc/proto-loader');
+const path = require('path');
+const AuthorUseCase = require('./domain/usecases/author.usecase');
+const MongoAuthorRepository = require('./application/repositories/mongo-author.repository');
 
-const app = express();
+const packageDefinition = protoLoader.loadSync(path.join(__dirname, 'author.proto'), {});
+const authorProto = grpc.loadPackageDefinition(packageDefinition).author;
 
-app.use(express.json());
-app.use('/user', userRoutes);
-app.use('/api', authorRoutes);
+const authorRepository = new MongoAuthorRepository();
+const authorUseCase = new AuthorUseCase(authorRepository);
 
-// Add error handler middleware
-app.use(errorHandler);
+const getAuthorById = async (call, callback) => {
+    try {
+        const author = await authorUseCase.getAuthorById(call.request.id);
+        callback(null, { author });
+    } catch (error) {
+        callback(error);
+    }
+};
 
-const port = process.env.PORT || 3000;
+const createAuthor = async (call, callback) => {
+    try {
+        const author = await authorUseCase.createAuthor(call.request);
+        callback(null, { author });
+    } catch (error) {
+        callback(error);
+    }
+};
 
-app.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
+const server = new grpc.Server();
+server.addService(authorProto.AuthorService.service, { getAuthorById, createAuthor });
+server.bindAsync('0.0.0.0:50051', grpc.ServerCredentials.createInsecure(), () => {
+    server.start();
+    console.log('gRPC server running on port 50051');
 });

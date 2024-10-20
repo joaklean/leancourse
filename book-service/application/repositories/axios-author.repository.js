@@ -1,21 +1,14 @@
 const IAuthorRepository = require('../../domain/interfaces/authorRepository.interface');
-const IntegrationFactory = require('../middlewares/integratonFactory');
+const IntegrationFactory = require('../factories/integratonFactory');
 
 class AxiosAuthorRepository extends IAuthorRepository {
-    constructor() {
+    constructor(integration) {
         super();
         this.authorServiceUrl = process.env.AUTHOR_SERVICE_URL || 'http://author-service:3000';
-        this.integration = null;
-    }
-
-    async ensureIntegration() {
-        if (!this.integration) {
-            this.integration = await IntegrationFactory('AXIOS_AUTH_INTEGRATION');
-        }
+        this.integration = integration;
     }
 
     async getAll() {
-        await this.ensureIntegration();
         try {
             const response = await this.integration.get(`${this.authorServiceUrl}/api/authors`);
             return response.data;
@@ -26,7 +19,6 @@ class AxiosAuthorRepository extends IAuthorRepository {
     }
 
     async create(author) {
-        await this.ensureIntegration();
         try {
             const response = await this.integration.post(`${this.authorServiceUrl}/api/authors`, author);
             return response.data;
@@ -37,7 +29,6 @@ class AxiosAuthorRepository extends IAuthorRepository {
     }
 
     async getById(id) {
-        await this.ensureIntegration();
         try {
             const response = await this.integration.get(`${this.authorServiceUrl}/api/authors/${id}`);
             return response.data;
@@ -48,7 +39,6 @@ class AxiosAuthorRepository extends IAuthorRepository {
     }
 
     async update(id, author) {
-        await this.ensureIntegration();
         try {
             const response = await this.integration.put(`${this.authorServiceUrl}/api/authors/${id}`, author);
             return response.data;
@@ -59,7 +49,6 @@ class AxiosAuthorRepository extends IAuthorRepository {
     }
 
     async delete(id) {
-        await this.ensureIntegration();
         try {
             const response = await this.integration.delete(`${this.authorServiceUrl}/api/authors/${id}`);
             return response.data;

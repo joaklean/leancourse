@@ -1,5 +1,5 @@
 const IBookRepository = require('../../domain/interfaces/bookRepository.interface');
-const Book = require('../models/mongo/Book-mongo.model'); // Adjust the path if needed
+const Book = require('../models/mongo/Book-mongo.model');
 
 class MongoBookRepository extends IBookRepository {
     async getAll() {
@@ -21,6 +21,10 @@ class MongoBookRepository extends IBookRepository {
 
     async delete(id) {
         return await Book.findByIdAndDelete(id);
+    }
+
+    async updateAuthorId(bookId, authorId) {
+        return await Book.findByIdAndUpdate(bookId, { author: authorId });
     }
 }
 

@@ -1,3 +1,5 @@
+const authorCreationQueue = require('../../application/queues/authorCreationQueue');
+
 class BookUseCase {
     constructor(bookRepository, authorRepository) {
         this.bookRepository = bookRepository;
@@ -7,11 +9,12 @@ class BookUseCase {
     async createBook(data) {
         try {
             let author = data.author.id ? await this.authorRepository.getById(data.author.id) : null;
+            const bookData = { ...data, author: author?._id || null };
+            const newBook = await this.bookRepository.create(bookData);
             if (!author) {
-                author = await this.authorRepository.create(data.author);
+                await authorCreationQueue.add('createAuthor', { author: data.author, bookId: newBook._id });
             }
-            const bookData = { ...data, author: author._id };
-            return await this.bookRepository.create(bookData);
+            return newBook;
         } catch (error) {
             console.error('Error creating book:', error);
             throw new Error('Failed to create book');

@@ -10,7 +10,6 @@ app.use(express.json());
 app.use('/user', userRoutes);
 app.use('/api', bookRoutes);
 
-// Add error handler middleware
 app.use(errorHandler);
 
 const port = process.env.PORT || 3000;
